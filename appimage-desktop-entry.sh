@@ -40,13 +40,21 @@ cp "$ICON_SRC" "$ICON_DST"
 
 DESKTOP_ENTRY_PATH="${HOME}/.local/share/applications/$APP_NAME.desktop"
 
+APPIMAGE_FULLPATH_ESC_SPACES="${APPIMAGE_FULLPATH// /\\ }"
 
-cat <<EOT >> "$DESKTOP_ENTRY_PATH"
+cat <<EOT > "$DESKTOP_ENTRY_PATH"
 [Desktop Entry]
 Name=$APP_NAME
-Exec=$APPIMAGE_FULLPATH
+Exec=$APPIMAGE_FULLPATH_ESC_SPACES
 Icon=$ICON_DST
 Type=Application
 Terminal=false
 EOT
 
+echo "Created";
+
+if [ "$2" == "--remove" ]; then
+    rm $ICON_DST
+    rm $DESKTOP_ENTRY_PATH
+    echo "Removed."
+fi
