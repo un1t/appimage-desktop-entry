@@ -1,0 +1,6 @@
+Bash script that creates desktop entry for an .AppImage
+
+## Limitations
+Make sure you appimage file does not contains spaces. 
+
+
