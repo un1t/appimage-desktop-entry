@@ -23,7 +23,7 @@ cd /tmp/
 cd /tmp/squashfs-root/
 
 echo "Choose icon: "
-FILENAMES=($(ls -d *.png))
+FILENAMES=($(find . -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.svg' \)))
 i=1
 for filename in ${FILENAMES[*]}
 do
