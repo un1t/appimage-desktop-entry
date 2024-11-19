@@ -23,7 +23,7 @@ cd /tmp/
 cd /tmp/squashfs-root/
 
 echo "Choose icon: "
-FILENAMES=($(ls -d *.png))
+FILENAMES=($(find -L . -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.svg' \)))
 i=1
 for filename in ${FILENAMES[*]}
 do
@@ -35,7 +35,9 @@ read SELECTED_INDEX
 
 ICON_SRC=${FILENAMES[$(expr $SELECTED_INDEX - 1)]}
 ICON_EXT="${ICON_SRC##*.}"
-ICON_DST="${HOME}/.local/share/icons/$APP_NAME.$ICON_EXT"
+ICON_FOLDER="${HOME}/.local/share/icons"
+ICON_DST="${ICON_FOLDER}/$APP_NAME.$ICON_EXT"             
+mkdir -p "${ICON_FOLDER}"
 cp "$ICON_SRC" "$ICON_DST"
 
 DESKTOP_ENTRY_PATH="${HOME}/.local/share/applications/$APP_NAME.desktop"
