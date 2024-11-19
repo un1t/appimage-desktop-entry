@@ -18,10 +18,20 @@ fi
 APPIMAGE_FULLPATH=$(readlink -e "$APPIMAGE_PATH")
 APPIMAGE_FILENAME=$(basename "$APPIMAGE_PATH")
 APP_NAME="${APPIMAGE_FILENAME%.*}"
+DESKTOP_ENTRY_PATH="${HOME}/.local/share/applications/$APP_NAME.desktop"
+ICON_FOLDER="${HOME}/.local/share/icons"
+mkdir -p "${ICON_FOLDER}"
+
+if [ "$2" == "--remove" ]; then
+    rm -f "$DESKTOP_ENTRY_PATH"
+    find "${ICON_FOLDER}" -maxdepth 1 -type f -name "$APP_NAME.*" -delete
+    echo "Removed"
+    exit 0
+fi
 
 rm -rf /tmp/squashfs-root/
 cd /tmp/
-"$APPIMAGE_FULLPATH" --appimage-extract
+"$APPIMAGE_FULLPATH" --appimage-extract > /dev/null
 cd /tmp/squashfs-root/
 
 echo "Choose icon: "
@@ -37,12 +47,8 @@ read -r SELECTED_INDEX
 
 ICON_SRC=${FILENAMES[$((SELECTED_INDEX - 1))]}
 ICON_EXT="${ICON_SRC##*.}"
-ICON_FOLDER="${HOME}/.local/share/icons"
-ICON_DST="${ICON_FOLDER}/$APP_NAME.$ICON_EXT"             
-mkdir -p "${ICON_FOLDER}"
+ICON_DST="${ICON_FOLDER}/$APP_NAME.$ICON_EXT"
 cp "$ICON_SRC" "$ICON_DST"
-
-DESKTOP_ENTRY_PATH="${HOME}/.local/share/applications/$APP_NAME.desktop"
 
 cat <<EOT > "$DESKTOP_ENTRY_PATH"
 [Desktop Entry]
@@ -54,9 +60,3 @@ Terminal=false
 EOT
 
 echo "Created"
-
-if [ "$2" == "--remove" ]; then
-    rm "$ICON_DST"
-    rm "$DESKTOP_ENTRY_PATH"
-    echo "Removed."
-fi
