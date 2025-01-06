@@ -14,7 +14,7 @@ if [ ! -f "$APPIMAGE_PATH" ]; then
     exit 1
 fi
 
-
+TEMP_SQUASHFS_PATH=$(mktemp -d)
 APPIMAGE_FULLPATH=$(readlink -e "$APPIMAGE_PATH")
 APPIMAGE_FILENAME=$(basename "$APPIMAGE_PATH")
 APP_NAME="${APPIMAGE_FILENAME%.*}"
@@ -29,10 +29,9 @@ if [ "$2" == "--remove" ]; then
     exit 0
 fi
 
-rm -rf /tmp/squashfs-root/
-cd /tmp/
+pushd $TEMP_SQUASHFS_PATH
 "$APPIMAGE_FULLPATH" --appimage-extract > /dev/null
-cd /tmp/squashfs-root/
+cd squashfs-root/
 
 echo "Choose icon: "
 mapfile -t FILENAMES < <(find -L . -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.svg' \))
@@ -60,3 +59,6 @@ Terminal=false
 EOT
 
 echo "Created"
+popd
+
+rm -rf $TEMP_SQUASHFS_PATH
