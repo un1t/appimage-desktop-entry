@@ -53,6 +53,7 @@ cp "$ICON_SRC" "$ICON_DST"
 cat <<EOT > "$DESKTOP_ENTRY_PATH"
 [Desktop Entry]
 Name=$APP_NAME
+StartupWMClass=$APP_NAME
 Exec="$APPIMAGE_FULLPATH"
 Icon=$ICON_DST
 Type=Application
